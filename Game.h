@@ -36,6 +36,9 @@ private:
 	bool mIsMovingDown;
 	bool mIsMovingRight;
 	bool mIsMovingLeft;
+	bool mIsJumping;
+	bool mIsOnLadder;
+	bool mIsOnBlock;  
 
 	sf::Texture	_TextureEchelle;
 	sf::Sprite	_Echelle[ECHELLE_COUNT];
@@ -44,6 +47,7 @@ private:
 	sf::Texture	_TextureWeapon;
 	sf::Sprite	_Weapon;
 	sf::Vector2u _sizeBlock;
+	sf::Vector2u _sizeLadder;
 	sf::Vector2u _sizeMario;
 };
 

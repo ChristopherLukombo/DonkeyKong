@@ -18,12 +18,19 @@ Game::Game()
 	, mIsMovingDown(false)
 	, mIsMovingRight(false)
 	, mIsMovingLeft(false)
+	, mIsJumping(false)
+	, mIsOnLadder(false)
+	, mIsOnBlock(false)
 {
 	mWindow.setFramerateLimit(160);
 
 	// Draw blocks
 
-	_TextureBlock.loadFromFile("Media/Textures/Block.png");
+	if (!_TextureBlock.loadFromFile("Media/Textures/Block.png"))
+	{
+		// Handle loading error
+	}
+	
 	_sizeBlock = _TextureBlock.getSize();
 
 	for (int i = 0; i < BLOCK_COUNT_X; i++)
@@ -38,14 +45,19 @@ Game::Game()
 			se->m_type = EntityType::block;
 			se->m_size = _TextureBlock.getSize();
 			se->m_position = _Block[i][j].getPosition();
+			se->m_sprite.setOrigin( (sf::Vector2f)_sizeBlock / 2.0f);
 			EntityManager::m_Entities.push_back(se);
 		}
 	}
 
 	// Draw Echelles
 
-	_TextureEchelle.loadFromFile("Media/Textures/Echelle.png");
-
+	if (!_TextureEchelle.loadFromFile("Media/Textures/Echelle.png"))
+	{
+		// Handle loading error
+	}
+	
+	_sizeLadder = _TextureEchelle.getSize();
 	for (int i = 0; i < ECHELLE_COUNT; i++)
 	{
 		_Echelle[i].setTexture(_TextureEchelle);
@@ -53,20 +65,24 @@ Game::Game()
 
 		std::shared_ptr<Entity> se = std::make_shared<Entity>();
 		se->m_sprite = _Echelle[i];
-		se->m_type = EntityType::echelle;
+		se->m_type = EntityType::ladder;
 		se->m_size = _TextureEchelle.getSize();
 		se->m_position = _Echelle[i].getPosition();
+		se->m_sprite.setOrigin((sf::Vector2f)_sizeLadder / 2.0f);
 		EntityManager::m_Entities.push_back(se);
 	}
 
 	// Draw Mario
 
-	mTexture.loadFromFile("Media/Textures/Mario_small_transparent.png"); // Mario_small.png");
+	if (!mTexture.loadFromFile("Media/Textures/Mario_small_transparent.png")) // Mario_small.png");
+	{
+		//Handle loading error
+	}
 	_sizeMario = mTexture.getSize();
 	mPlayer.setTexture(mTexture);
 	sf::Vector2f posMario;
 	posMario.x = 100.f + 70.f;
-	posMario.y = BLOCK_SPACE * 5 - _sizeMario.y;
+	posMario.y = BLOCK_SPACE * 5 - _sizeMario.y - 5;
 
 	mPlayer.setPosition(posMario);
 
@@ -75,6 +91,7 @@ Game::Game()
 	player->m_type = EntityType::player;
 	player->m_size = mTexture.getSize();
 	player->m_position = mPlayer.getPosition();
+	player->m_sprite.setOrigin((sf::Vector2f)mTexture.getSize() / 2.0f);
 	EntityManager::m_Entities.push_back(player);
 
 	// Draw Statistic Font 
@@ -97,7 +114,7 @@ void Game::run()
 		while (timeSinceLastUpdate > TimePerFrame)
 		{
 			timeSinceLastUpdate -= TimePerFrame;
-
+			
 			processEvents();
 			update(TimePerFrame);
 		}
@@ -127,11 +144,21 @@ void Game::processEvents()
 			break;
 		}
 	}
+
+
 }
 
 void Game::update(sf::Time elapsedTime)
 {
 	sf::Vector2f movement(0.f, 0.f);
+
+	if (!mIsOnBlock)
+	{
+		movement.y = 0.1f;
+	}
+
+
+
 	if (mIsMovingUp)
 		movement.y -= PlayerSpeed;
 	if (mIsMovingDown)
@@ -184,7 +211,8 @@ void Game::updateStatistics(sf::Time elapsedTime)
 	{
 		mStatisticsText.setString(
 			"Frames / Second = " + toString(mStatisticsNumFrames) + "\n" +
-			"Time / Update = " + toString(mStatisticsUpdateTime.asMicroseconds() / mStatisticsNumFrames) + "us");
+			"Time / Update = " + toString(mStatisticsUpdateTime.asMicroseconds() / mStatisticsNumFrames) + "us\n" +
+			"Is on ladder ? = " + toString(mIsOnLadder));
 
 		mStatisticsUpdateTime -= sf::seconds(1.0f);
 		mStatisticsNumFrames = 0;
@@ -196,20 +224,74 @@ void Game::updateStatistics(sf::Time elapsedTime)
 
 	if (mStatisticsUpdateTime >= sf::seconds(0.050f))
 	{
-		// Handle collision weapon enemies
+		// Handle collision mario and ladder
+
+		for (std::shared_ptr<Entity> player : EntityManager::m_Entities)
+		{
+			if (player->m_type != EntityType::player)
+			{
+				continue;
+			}
+
+			if (player->m_enabled == false)
+			{
+				continue;
+			}
+
+			for (std::shared_ptr<Entity> block : EntityManager::m_Entities)
+			{
+				if (block->m_type != EntityType::block)
+				{
+					continue;
+				}
+
+				if (block->m_enabled == false)
+				{
+					continue;
+				}
+
+				//sf::FloatRect playerBounds = player->m_sprite.getGlobalBounds();
+				//sf::FloatRect blockBounds = block->m_sprite.getGlobalBounds();
+				
+
+				// Collision with the platform of blocks
+				Collider col = block->GetCollider();
+				mIsOnBlock = !player->GetCollider().checkCollision(col, 0.0f);
+								
+			}
+		
+		
+		}
 	}
 }
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
-	if (key == sf::Keyboard::Up)
+	if (key == sf::Keyboard::Up && mIsOnLadder == true) 
+	{
 		mIsMovingUp = isPressed;
-	else if (key == sf::Keyboard::Down)
+	}
+	else if (key == sf::Keyboard::Up && mIsOnLadder == false)
+	{
+		mIsMovingUp = false;
+	}
+	else if (key == sf::Keyboard::Down && mIsOnLadder == true)
+	{
 		mIsMovingDown = isPressed;
+	}
+	else if (key == sf::Keyboard::Down && mIsOnLadder == false)
+	{
+		mIsMovingDown = false;
+	}
 	else if (key == sf::Keyboard::Left)
+	{
 		mIsMovingLeft = isPressed;
+	}
 	else if (key == sf::Keyboard::Right)
+	{
 		mIsMovingRight = isPressed;
+	}
+
 
 	if (key == sf::Keyboard::Space)
 	{

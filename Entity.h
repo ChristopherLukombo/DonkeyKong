@@ -1,10 +1,11 @@
 #pragma once
+#include "Collider.h"
 
 enum EntityType
 {
 	player,
 	block,
-	echelle
+	ladder
 };
 
 class Entity
@@ -12,6 +13,9 @@ class Entity
 public:
 	Entity() { };
 	~Entity() { };
+
+	sf::Vector2f GetPosition() { return m_position;  }
+	Collider GetCollider() { return Collider(m_sprite, m_size);  } 
 
 public:
 	sf::Sprite m_sprite;
