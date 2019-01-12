@@ -82,7 +82,7 @@ Game::Game()
 	mPlayer.setTexture(mTexture);
 	sf::Vector2f posMario;
 	posMario.x = 100.f + 70.f;
-	posMario.y = BLOCK_SPACE * 5 - _sizeMario.y - 5;
+	posMario.y = BLOCK_SPACE * 5 - _sizeMario.y;
 
 	mPlayer.setPosition(posMario);
 
@@ -111,6 +111,8 @@ void Game::run()
 	{
 		sf::Time elapsedTime = clock.restart();
 		timeSinceLastUpdate += elapsedTime;
+
+		
 		while (timeSinceLastUpdate > TimePerFrame)
 		{
 			timeSinceLastUpdate -= TimePerFrame;
@@ -118,7 +120,6 @@ void Game::run()
 			processEvents();
 			update(TimePerFrame);
 		}
-
 		updateStatistics(elapsedTime);
 		render();
 	}
@@ -154,7 +155,7 @@ void Game::update(sf::Time elapsedTime)
 
 	if (!mIsOnBlock)
 	{
-		movement.y = 0.1f;
+		movement.y = 50.0f;
 	}
 
 
@@ -212,7 +213,7 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		mStatisticsText.setString(
 			"Frames / Second = " + toString(mStatisticsNumFrames) + "\n" +
 			"Time / Update = " + toString(mStatisticsUpdateTime.asMicroseconds() / mStatisticsNumFrames) + "us\n" +
-			"Is on ladder ? = " + toString(mIsOnLadder));
+			"Gravity on ? = " + toString(!mIsOnBlock));
 
 		mStatisticsUpdateTime -= sf::seconds(1.0f);
 		mStatisticsNumFrames = 0;
@@ -250,13 +251,33 @@ void Game::updateStatistics(sf::Time elapsedTime)
 					continue;
 				}
 
-				//sf::FloatRect playerBounds = player->m_sprite.getGlobalBounds();
-				//sf::FloatRect blockBounds = block->m_sprite.getGlobalBounds();
-				
+/*
+				sf::FloatRect playerBounds = player->m_sprite.getGlobalBounds();
+				sf::FloatRect blockBounds = block->m_sprite.getGlobalBounds();
+
+				if (playerBounds.intersects(blockBounds))
+				{
+					std::cout << "COLLIDE" << std::endl;
+					mIsOnBlock = true;
+
+				}
+				else
+				{
+					std::cout << "DONT COLLIDE" << std::endl;
+					mIsOnBlock = false;
+				}
+*/
+
+
+
+
 
 				// Collision with the platform of blocks
 				Collider col = block->GetCollider();
-				mIsOnBlock = !player->GetCollider().checkCollision(col, 0.0f);
+				mIsOnBlock  = player->GetCollider().checkCollision(col, 0.0f);
+
+
+
 								
 			}
 		
