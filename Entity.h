@@ -5,7 +5,8 @@ enum EntityType
 {
 	player,
 	block,
-	ladder
+	ladder,
+	coin
 };
 
 class Entity

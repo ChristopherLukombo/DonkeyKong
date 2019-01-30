@@ -72,6 +72,28 @@ Game::Game()
 		EntityManager::m_Entities.push_back(se);
 	}
 
+	// Draw Coins
+
+	_TextureCoin.loadFromFile("Media/Textures/Piece.PNG");
+
+	_sizeCoin = _TextureCoin.getSize();
+	for (int i = 0; i < COIN_COUNT_X; i++)
+	{
+		for (int j = 0; j < COIN_COUNT_Y; j++)
+		{
+			_Coin[i][j].setTexture(_TextureCoin);
+			_Coin[i][j].setPosition(100.f + 150.f * (i + 1), 0.f + BLOCK_SPACE * (i + 1) - _sizeBlock.y);
+
+			std::shared_ptr<Entity> se = std::make_shared<Entity>();
+			se->m_sprite = _Coin[i][j];
+			se->m_type = EntityType::coin;
+			se->m_size = _TextureCoin.getSize();
+			se->m_position = _Coin[i][j].getPosition();
+			se->m_sprite.setOrigin((sf::Vector2f)_sizeCoin / 2.0f);
+			EntityManager::m_Entities.push_back(se);
+		}
+	}
+
 	// Draw Mario
 
 	if (!mTexture.loadFromFile("Media/Textures/Mario_small_transparent.png")) // Mario_small.png");
@@ -157,8 +179,6 @@ void Game::update(sf::Time elapsedTime)
 	{
 		movement.y = 50.0f;
 	}
-
-
 
 	if (mIsMovingUp)
 		movement.y -= PlayerSpeed;
@@ -268,10 +288,6 @@ void Game::updateStatistics(sf::Time elapsedTime)
 				}
 */
 
-
-
-
-
 				// Collision with the platform of blocks
 				Collider col = block->GetCollider();
 				mIsOnBlock  = player->GetCollider().checkCollision(col, 0.0f);
@@ -291,6 +307,7 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 	if (key == sf::Keyboard::Up && mIsOnLadder == true) 
 	{
 		mIsMovingUp = isPressed;
+		mTexture.loadFromFile("Media/Textures/Mario1.png");
 	}
 	else if (key == sf::Keyboard::Up && mIsOnLadder == false)
 	{
@@ -299,6 +316,7 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 	else if (key == sf::Keyboard::Down && mIsOnLadder == true)
 	{
 		mIsMovingDown = isPressed;
+		mTexture.loadFromFile("Media/Textures/Mario1.png");
 	}
 	else if (key == sf::Keyboard::Down && mIsOnLadder == false)
 	{
@@ -307,14 +325,17 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 	else if (key == sf::Keyboard::Left)
 	{
 		mIsMovingLeft = isPressed;
+		mTexture.loadFromFile("Media/Textures/MarioLeft.png");
 	}
 	else if (key == sf::Keyboard::Right)
 	{
 		mIsMovingRight = isPressed;
+		mTexture.loadFromFile("Media/Textures/Mario_small_transparent.png");
 	}
 
 
 	if (key == sf::Keyboard::Space)
 	{
+		mTexture.loadFromFile("Media/Textures/Mario1.png");
 	}
 }

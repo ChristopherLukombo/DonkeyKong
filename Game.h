@@ -4,6 +4,8 @@
 #define BLOCK_COUNT_X 8
 #define BLOCK_COUNT_Y 5
 #define BLOCK_SPACE 110.f
+#define COIN_COUNT_X 2
+#define COIN_COUNT_Y 4
 
 class Game
 {
@@ -44,10 +46,13 @@ private:
 	sf::Sprite	_Echelle[ECHELLE_COUNT];
 	sf::Texture	_TextureBlock;
 	sf::Sprite	_Block[BLOCK_COUNT_X][BLOCK_COUNT_Y];
+	sf::Texture	_TextureCoin;
+	sf::Sprite	_Coin[COIN_COUNT_X][COIN_COUNT_Y];
 	sf::Texture	_TextureWeapon;
 	sf::Sprite	_Weapon;
 	sf::Vector2u _sizeBlock;
 	sf::Vector2u _sizeLadder;
+	sf::Vector2u _sizeCoin;
 	sf::Vector2u _sizeMario;
 };
 
