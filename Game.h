@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Player.h"
+#include "Window.h"
+
 #define ECHELLE_COUNT 4
 #define BLOCK_COUNT_X 8
 #define BLOCK_COUNT_Y 5
-#define BLOCK_SPACE 110.f
+#define BLOCK_SPACE 95.f
 
 class Game
 {
@@ -12,33 +15,37 @@ public:
 	~Game() { };
 	void run();
 
+public :
+	void HandleInput();
+	Window* GetWindow() { return &m_window; };
+
+	void RestartClock();
+
 private:
-	void processEvents();
 	void update(sf::Time elapsedTime);
 	void render();
 
 	void updateStatistics(sf::Time elapsedTime);
+	void handleCollisionBlock();
+	void handleCollisionLadder();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+
 
 private:
 	static const float		PlayerSpeed;
 	static const sf::Time	TimePerFrame;
 
-	sf::RenderWindow		mWindow;
+	Window m_window;
 	sf::Texture	mTexture;
-	sf::Sprite	mPlayer;
+	Player	mPlayer;
 	sf::Font	mFont;
 	sf::Text	mStatisticsText;
 	sf::Time	mStatisticsUpdateTime;
 
 	std::size_t	mStatisticsNumFrames;
-	bool mIsMovingUp;
-	bool mIsMovingDown;
-	bool mIsMovingRight;
-	bool mIsMovingLeft;
-	bool mIsJumping;
-	bool mIsOnLadder;
-	bool mIsOnBlock;  
+
+	sf::Clock m_clock;
+	sf::Time m_elapsed;
 
 	sf::Texture	_TextureEchelle;
 	sf::Sprite	_Echelle[ECHELLE_COUNT];

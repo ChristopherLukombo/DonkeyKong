@@ -3,26 +3,18 @@
 #include "Game.h"
 #include "EntityManager.h"
 
-const float Game::PlayerSpeed = 100.f;
+const float Game::PlayerSpeed = 10.f;
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Game::Game()
-	: mWindow(sf::VideoMode(840, 600), "Donkey Kong 1981", sf::Style::Close)
+	: m_window("Donkey Kong 1981", sf::Vector2u(840, 600))
 	, mTexture()
 	, mPlayer()
 	, mFont()
 	, mStatisticsText()
 	, mStatisticsUpdateTime()
-	, mStatisticsNumFrames(0)
-	, mIsMovingUp(false)
-	, mIsMovingDown(false)
-	, mIsMovingRight(false)
-	, mIsMovingLeft(false)
-	, mIsJumping(false)
-	, mIsOnLadder(false)
-	, mIsOnBlock(false)
+	, mStatisticsNumFrames(0) 
 {
-	mWindow.setFramerateLimit(160);
 
 	// Draw blocks
 
@@ -78,20 +70,18 @@ Game::Game()
 	{
 		//Handle loading error
 	}
-	_sizeMario = mTexture.getSize();
-	mPlayer.setTexture(mTexture);
-	sf::Vector2f posMario;
-	posMario.x = 100.f + 70.f;
-	posMario.y = BLOCK_SPACE * 5 - _sizeMario.y;
 
-	mPlayer.setPosition(posMario);
+
+	mPlayer.m_sprite.setTexture(mTexture);
+	mPlayer.m_size = mTexture.getSize();
+	mPlayer.m_position.x = 100.f + 70.f;
+	mPlayer.m_position.y = BLOCK_SPACE * 5 - mPlayer.m_size.y;
+	mPlayer.m_sprite.setPosition(mPlayer.m_position);
+	mPlayer.m_sprite.setOrigin((sf::Vector2f)mTexture.getSize() / 2.0f);
+
 
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
-	player->m_sprite = mPlayer;
-	player->m_type = EntityType::player;
-	player->m_size = mTexture.getSize();
-	player->m_position = mPlayer.getPosition();
-	player->m_sprite.setOrigin((sf::Vector2f)mTexture.getSize() / 2.0f);
+	*player = mPlayer;
 	EntityManager::m_Entities.push_back(player);
 
 	// Draw Statistic Font 
@@ -105,68 +95,83 @@ Game::Game()
 
 void Game::run()
 {
-	sf::Clock clock;
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
-	while (mWindow.isOpen())
-	{
-		sf::Time elapsedTime = clock.restart();
-		timeSinceLastUpdate += elapsedTime;
 
+	while ( !m_window.isDone() )
+	{
+		RestartClock();
+		timeSinceLastUpdate += m_elapsed;
 		
 		while (timeSinceLastUpdate > TimePerFrame)
 		{
 			timeSinceLastUpdate -= TimePerFrame;
-			
-			processEvents();
+			HandleInput();
+			m_window.Update();
 			update(TimePerFrame);
 		}
-		updateStatistics(elapsedTime);
+		updateStatistics(m_elapsed);
 		render();
 	}
+
 }
 
-void Game::processEvents()
+void Game::HandleInput()
 {
-	sf::Event event;
-	while (mWindow.pollEvent(event))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		switch (event.type)
-		{
-		case sf::Event::KeyPressed:
-			handlePlayerInput(event.key.code, true);
-			break;
-
-		case sf::Event::KeyReleased:
-			handlePlayerInput(event.key.code, false);
-			break;
-
-		case sf::Event::Closed:
-			mWindow.close();
-			break;
-		}
+		mPlayer._movingUp = true && mPlayer._onLadder ? true : false;
+	} 
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		mPlayer._movingDown = true && mPlayer._onLadder ? true : false;
+	}
+	else {
+		mPlayer._movingUp = false;
+		mPlayer._movingDown = false;
 	}
 
 
+	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		mPlayer._movingLeft = true;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		mPlayer._movingRight = true;
+	 }
+	else {
+		 mPlayer._movingLeft = false;
+		 mPlayer._movingRight = false;
+	 }
+
+	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	 {
+	 }
+}
+
+void Game::RestartClock()
+{
+	m_elapsed = m_clock.restart();
 }
 
 void Game::update(sf::Time elapsedTime)
 {
 	sf::Vector2f movement(0.f, 0.f);
 
-	if (!mIsOnBlock)
+	if (!mPlayer._onBlock)
 	{
-		movement.y = 50.0f;
+		movement.y = 5.0f;
 	}
 
 
 
-	if (mIsMovingUp)
+	if (mPlayer._movingUp)
 		movement.y -= PlayerSpeed;
-	if (mIsMovingDown)
+	if (mPlayer._movingDown)
 		movement.y += PlayerSpeed;
-	if (mIsMovingLeft)
+	if (mPlayer._movingLeft)
 		movement.x -= PlayerSpeed;
-	if (mIsMovingRight)
+	if (mPlayer._movingRight)
 		movement.x += PlayerSpeed;
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
@@ -187,7 +192,7 @@ void Game::update(sf::Time elapsedTime)
 
 void Game::render()
 {
-	mWindow.clear();
+	m_window.BeginDraw();
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
@@ -196,11 +201,11 @@ void Game::render()
 			continue;
 		}
 
-		mWindow.draw(entity->m_sprite);
+		m_window.Draw(entity->m_sprite);
 	}
 
-	mWindow.draw(mStatisticsText);
-	mWindow.display();
+	m_window.Draw(mStatisticsText);
+	m_window.EndDraw();
 }
 
 void Game::updateStatistics(sf::Time elapsedTime)
@@ -213,7 +218,7 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		mStatisticsText.setString(
 			"Frames / Second = " + toString(mStatisticsNumFrames) + "\n" +
 			"Time / Update = " + toString(mStatisticsUpdateTime.asMicroseconds() / mStatisticsNumFrames) + "us\n" +
-			"Gravity on ? = " + toString(!mIsOnBlock));
+			"Gravity on ? = " + toString(!mPlayer._onBlock));
 
 		mStatisticsUpdateTime -= sf::seconds(1.0f);
 		mStatisticsNumFrames = 0;
@@ -225,96 +230,128 @@ void Game::updateStatistics(sf::Time elapsedTime)
 
 	if (mStatisticsUpdateTime >= sf::seconds(0.050f))
 	{
-		// Handle collision mario and ladder
-
-		for (std::shared_ptr<Entity> player : EntityManager::m_Entities)
-		{
-			if (player->m_type != EntityType::player)
-			{
-				continue;
-			}
-
-			if (player->m_enabled == false)
-			{
-				continue;
-			}
-
-			for (std::shared_ptr<Entity> block : EntityManager::m_Entities)
-			{
-				if (block->m_type != EntityType::block)
-				{
-					continue;
-				}
-
-				if (block->m_enabled == false)
-				{
-					continue;
-				}
-
-/*
-				sf::FloatRect playerBounds = player->m_sprite.getGlobalBounds();
-				sf::FloatRect blockBounds = block->m_sprite.getGlobalBounds();
-
-				if (playerBounds.intersects(blockBounds))
-				{
-					std::cout << "COLLIDE" << std::endl;
-					mIsOnBlock = true;
-
-				}
-				else
-				{
-					std::cout << "DONT COLLIDE" << std::endl;
-					mIsOnBlock = false;
-				}
-*/
-
-
-
-
-
-				// Collision with the platform of blocks
-				Collider col = block->GetCollider();
-				mIsOnBlock  = player->GetCollider().checkCollision(col, 0.0f);
-
-
-
-								
-			}
-		
-		
-		}
+		handleCollisionLadder();
+		handleCollisionBlock();
 	}
 }
 
+void Game::handleCollisionBlock()
+{
+
+		for (std::shared_ptr<Entity> block : EntityManager::m_Entities)
+		{
+			if (block->m_type != EntityType::block)
+			{
+				continue;
+			}
+
+			if (block->m_enabled == false)
+			{
+				continue;
+			}
+
+			sf::FloatRect playerBounds = EntityManager::GetPlayer()->m_sprite.getGlobalBounds();
+			sf::FloatRect blockBounds = block->m_sprite.getGlobalBounds();
+
+			if (playerBounds.intersects(blockBounds) == true)
+			{
+				std::cout << "COLLIDE" << std::endl;
+				mPlayer._onBlock = true;
+				break;
+			}
+			else
+			{
+				std::cout << "DONT COLLIDE" << std::endl;
+				mPlayer._onBlock = false;
+			}
+
+		}
+	return;
+}
+
+void Game::handleCollisionLadder()
+{
+		for (std::shared_ptr<Entity> ladder : EntityManager::m_Entities)
+		{
+			if (ladder->m_type != EntityType::ladder)
+			{
+				continue;
+			}
+
+			if (ladder->m_enabled == false)
+			{
+				continue;
+			}
+
+
+			sf::FloatRect playerBounds = EntityManager::GetPlayer()->m_sprite.getGlobalBounds();
+			sf::FloatRect ladderBounds = ladder->m_sprite.getGlobalBounds();
+
+			if (playerBounds.intersects(ladderBounds))
+			{
+				std::cout << "COLLIDE LADDER" << std::endl;
+				mPlayer._onLadder = true;
+				break;
+			}
+			else 
+			{
+				std::cout << "DONT COLLIDE LADDER" << std::endl;
+				mPlayer._onLadder = false;
+			}
+		}
+	return;
+}
+
+
+
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
-	if (key == sf::Keyboard::Up && mIsOnLadder == true) 
+	if (key == sf::Keyboard::Up && mPlayer._onLadder == true)
 	{
-		mIsMovingUp = isPressed;
+		mPlayer._movingUp = isPressed;
 	}
-	else if (key == sf::Keyboard::Up && mIsOnLadder == false)
+	else if (key == sf::Keyboard::Up && mPlayer._onLadder == false)
 	{
-		mIsMovingUp = false;
+		mPlayer._movingUp = false;
 	}
-	else if (key == sf::Keyboard::Down && mIsOnLadder == true)
+	else if (key == sf::Keyboard::Down && mPlayer._onLadder == true)
 	{
-		mIsMovingDown = isPressed;
+		mPlayer._movingDown = isPressed;
 	}
-	else if (key == sf::Keyboard::Down && mIsOnLadder == false)
+	else if (key == sf::Keyboard::Down && mPlayer._onLadder == false)
 	{
-		mIsMovingDown = false;
+		mPlayer._movingDown = false;
 	}
 	else if (key == sf::Keyboard::Left)
 	{
-		mIsMovingLeft = isPressed;
+		mPlayer._movingLeft = isPressed;
 	}
 	else if (key == sf::Keyboard::Right)
 	{
-		mIsMovingRight = isPressed;
+		mPlayer._movingRight = isPressed;
 	}
+
+	// moving free
+	/*if (key == sf::Keyboard::Up)
+	{
+		mPlayer.SetMovingUp(isPressed);
+	}
+	else if (key == sf::Keyboard::Down)
+	{
+		mPlayer.SetMovingDown(isPressed);
+	}
+	else if (key == sf::Keyboard::Left)
+	{
+		mPlayer.SetMovingLeft(isPressed);
+	}
+	else if (key == sf::Keyboard::Right)
+	{
+		mPlayer.SetMovingRight(isPressed);
+	}*/
 
 
 	if (key == sf::Keyboard::Space)
 	{
 	}
 }
+
