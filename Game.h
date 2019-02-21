@@ -6,7 +6,7 @@
 #define ECHELLE_COUNT 4
 #define BLOCK_COUNT_X 8
 #define BLOCK_COUNT_Y 5
-#define BLOCK_SPACE 95.f
+#define BLOCK_SPACE 110.f
 
 class Game
 {
@@ -15,13 +15,14 @@ public:
 	~Game() { };
 	void run();
 
+
 public :
-	void HandleInput();
 	Window* GetWindow() { return &m_window; };
 
 	void RestartClock();
 
 private:
+	void processEvents();
 	void update(sf::Time elapsedTime);
 	void render();
 
@@ -29,6 +30,9 @@ private:
 	void handleCollisionBlock();
 	void handleCollisionLadder();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+
+	//useless
+	void MoveSprite(EventDetails* l_details);
 
 
 private:

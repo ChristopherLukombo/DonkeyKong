@@ -10,6 +10,8 @@ public:
 	~Player();
 
 public :
+	static const float PlayerSpeed;
+
 	bool _movingUp;
 	bool _movingDown;
 	bool _movingRight;

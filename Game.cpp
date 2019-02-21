@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "EntityManager.h"
 
-const float Game::PlayerSpeed = 10.f;
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Game::Game()
@@ -37,7 +36,7 @@ Game::Game()
 			se->m_type = EntityType::block;
 			se->m_size = _TextureBlock.getSize();
 			se->m_position = _Block[i][j].getPosition();
-			se->m_sprite.setOrigin( (sf::Vector2f)_sizeBlock / 2.0f);
+			//se->m_sprite.setOrigin( (sf::Vector2f)_sizeBlock / 2.0f);
 			EntityManager::m_Entities.push_back(se);
 		}
 	}
@@ -60,7 +59,7 @@ Game::Game()
 		se->m_type = EntityType::ladder;
 		se->m_size = _TextureEchelle.getSize();
 		se->m_position = _Echelle[i].getPosition();
-		se->m_sprite.setOrigin((sf::Vector2f)_sizeLadder / 2.0f);
+		//se->m_sprite.setOrigin((sf::Vector2f)_sizeLadder / 2.0f);
 		EntityManager::m_Entities.push_back(se);
 	}
 
@@ -77,7 +76,7 @@ Game::Game()
 	mPlayer.m_position.x = 100.f + 70.f;
 	mPlayer.m_position.y = BLOCK_SPACE * 5 - mPlayer.m_size.y;
 	mPlayer.m_sprite.setPosition(mPlayer.m_position);
-	mPlayer.m_sprite.setOrigin((sf::Vector2f)mTexture.getSize() / 2.0f);
+	//mPlayer.m_sprite.setOrigin((sf::Vector2f)mTexture.getSize() / 2.0f);
 
 
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
@@ -91,62 +90,56 @@ Game::Game()
 	mStatisticsText.setFont(mFont);
 	mStatisticsText.setPosition(5.f, 5.f);
 	mStatisticsText.setCharacterSize(10);
+
+
+	//Adding bindings events
+	m_window.GetEventManager()->AddCallback("Move", &Game::MoveSprite, this);
+
 }
 
 void Game::run()
 {
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
-
 	while ( !m_window.isDone() )
 	{
 		RestartClock();
 		timeSinceLastUpdate += m_elapsed;
-		
 		while (timeSinceLastUpdate > TimePerFrame)
 		{
 			timeSinceLastUpdate -= TimePerFrame;
-			HandleInput();
-			m_window.Update();
+			processEvents();
 			update(TimePerFrame);
 		}
 		updateStatistics(m_elapsed);
 		render();
 	}
-
 }
 
-void Game::HandleInput()
+void Game::processEvents()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		mPlayer._movingUp = true && mPlayer._onLadder ? true : false;
-	} 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		mPlayer._movingDown = true && mPlayer._onLadder ? true : false;
-	}
-	else {
-		mPlayer._movingUp = false;
-		mPlayer._movingDown = false;
+	sf::Event event;
+	while (m_window.GetRenderWindow()->pollEvent(event)) {
+		switch (event.type) {
+		case sf::Event::KeyPressed:
+			handlePlayerInput(event.key.code, true);
+			break;
+
+		case sf::Event::KeyReleased:
+			handlePlayerInput(event.key.code, false);
+			break;
+		case sf::Event::LostFocus:
+			m_window.SetFocus(false);
+			m_window.GetEventManager()->SetFocus(false);
+			break;
+		case sf::Event::GainedFocus:
+			m_window.SetFocus(true);
+			m_window.GetEventManager()->SetFocus(true);
+			break;
+		}
+		m_window.GetEventManager()->HandleEvent(event);
 	}
 
-
-	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		mPlayer._movingLeft = true;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		mPlayer._movingRight = true;
-	 }
-	else {
-		 mPlayer._movingLeft = false;
-		 mPlayer._movingRight = false;
-	 }
-
-	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-	 {
-	 }
+	m_window.GetEventManager()->Update();
 }
 
 void Game::RestartClock()
@@ -160,19 +153,17 @@ void Game::update(sf::Time elapsedTime)
 
 	if (!mPlayer._onBlock)
 	{
-		movement.y = 5.0f;
+		movement.y = 100.0f;
 	}
 
-
-
 	if (mPlayer._movingUp)
-		movement.y -= PlayerSpeed;
+		movement.y -= Player::PlayerSpeed;
 	if (mPlayer._movingDown)
-		movement.y += PlayerSpeed;
+		movement.y += Player::PlayerSpeed;
 	if (mPlayer._movingLeft)
-		movement.x -= PlayerSpeed;
+		movement.x -= Player::PlayerSpeed;
 	if (mPlayer._movingRight)
-		movement.x += PlayerSpeed;
+		movement.x += Player::PlayerSpeed;
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
@@ -250,6 +241,7 @@ void Game::handleCollisionBlock()
 				continue;
 			}
 
+
 			sf::FloatRect playerBounds = EntityManager::GetPlayer()->m_sprite.getGlobalBounds();
 			sf::FloatRect blockBounds = block->m_sprite.getGlobalBounds();
 
@@ -264,6 +256,11 @@ void Game::handleCollisionBlock()
 				std::cout << "DONT COLLIDE" << std::endl;
 				mPlayer._onBlock = false;
 			}
+
+
+			//Collider col = block->GetCollider();
+			//mPlayer._onBlock = EntityManager::GetPlayer()->GetCollider().checkCollision(col, 0.0f);
+
 
 		}
 	return;
@@ -306,21 +303,13 @@ void Game::handleCollisionLadder()
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
-	if (key == sf::Keyboard::Up && mPlayer._onLadder == true)
+	if (key == sf::Keyboard::Up)
 	{
-		mPlayer._movingUp = isPressed;
+		mPlayer._movingUp = isPressed && mPlayer._onLadder ? true : false;
 	}
-	else if (key == sf::Keyboard::Up && mPlayer._onLadder == false)
+	else if (key == sf::Keyboard::Down)
 	{
-		mPlayer._movingUp = false;
-	}
-	else if (key == sf::Keyboard::Down && mPlayer._onLadder == true)
-	{
-		mPlayer._movingDown = isPressed;
-	}
-	else if (key == sf::Keyboard::Down && mPlayer._onLadder == false)
-	{
-		mPlayer._movingDown = false;
+		mPlayer._movingDown = isPressed && mPlayer._onLadder ? true : false;
 	}
 	else if (key == sf::Keyboard::Left)
 	{
@@ -332,26 +321,52 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 	}
 
 	// moving free
-	/*if (key == sf::Keyboard::Up)
+	/*if (l_details->m_keyCode == sf::Keyboard::Up)
 	{
-		mPlayer.SetMovingUp(isPressed);
+		mPlayer._movingUp;
 	}
-	else if (key == sf::Keyboard::Down)
+	else if (l_details->m_keyCode == sf::Keyboard::Down)
 	{
-		mPlayer.SetMovingDown(isPressed);
+		mPlayer._movingDown;
 	}
-	else if (key == sf::Keyboard::Left)
+	else if (l_details->m_keyCode == sf::Keyboard::Left)
 	{
-		mPlayer.SetMovingLeft(isPressed);
+		mPlayer._movingLeft;
 	}
-	else if (key == sf::Keyboard::Right)
+	else if (l_details->m_keyCode == sf::Keyboard::Right)
 	{
-		mPlayer.SetMovingRight(isPressed);
+		mPlayer._movingRight;
 	}*/
 
 
 	if (key == sf::Keyboard::Space)
 	{
 	}
+}
+
+void Game::MoveSprite(EventDetails* l_details)
+{
+	sf::Vector2i mousepos = m_window.GetEventManager()->GetMousePosition(m_window.GetRenderWindow());
+	//mPlayer.m_sprite.setPosition(mousepos.x, mousepos.y);
+	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
+	{
+		if (entity->m_enabled == false)
+		{
+			continue;
+		}
+
+		if (entity->m_type != EntityType::player)
+		{
+			continue;
+		}
+
+		entity->m_sprite.setPosition(mousepos.x, mousepos.y);
+	}
+
+
+	std::cout <<"Moving sprite to : "
+		<< mousepos.x << ":" 
+		<< mousepos.y << std::endl;
+
 }
 
