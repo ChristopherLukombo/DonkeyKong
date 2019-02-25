@@ -13,3 +13,47 @@ Player::Player() :
 Player::~Player()
 {
 }
+
+void Player::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
+{
+	if (key == sf::Keyboard::Up)
+	{
+		_movingUp = isPressed && _onLadder ? true : false;
+	}
+	else if (key == sf::Keyboard::Down)
+	{
+		_movingDown = isPressed && _onLadder ? true : false;
+	}
+	else if (key == sf::Keyboard::Left)
+	{
+		_movingLeft = isPressed;
+	}
+	else if (key == sf::Keyboard::Right)
+	{
+		_movingRight = isPressed;
+	}
+
+	// moving free
+	/*if ( key == sf::Keyboard::Up)
+	{
+		_movingUp;
+	}
+	else if (key == sf::Keyboard::Down)
+	{
+		_movingDown;
+	}
+	else if (key == sf::Keyboard::Left)
+	{
+		_movingLeft;
+	}
+	else if (key == sf::Keyboard::Right)
+	{
+		_movingRight;
+	}*/
+
+
+	if (key == sf::Keyboard::Space)
+	{
+	}
+
+}

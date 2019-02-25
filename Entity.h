@@ -4,8 +4,13 @@
 enum EntityType
 {
 	player,
+	donkey_kong,
+	peach,
 	block,
-	ladder
+	coins,
+	ladder,
+	barrel
+
 };
 
 class Entity

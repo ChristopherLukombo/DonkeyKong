@@ -121,11 +121,11 @@ void Game::processEvents()
 	while (m_window.GetRenderWindow()->pollEvent(event)) {
 		switch (event.type) {
 		case sf::Event::KeyPressed:
-			handlePlayerInput(event.key.code, true);
+			mPlayer.handlePlayerInput(event.key.code, true);
 			break;
 
 		case sf::Event::KeyReleased:
-			handlePlayerInput(event.key.code, false);
+			mPlayer.handlePlayerInput(event.key.code, false);
 			break;
 		case sf::Event::LostFocus:
 			m_window.SetFocus(false);
@@ -299,50 +299,6 @@ void Game::handleCollisionLadder()
 	return;
 }
 
-
-
-void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
-{
-	if (key == sf::Keyboard::Up)
-	{
-		mPlayer._movingUp = isPressed && mPlayer._onLadder ? true : false;
-	}
-	else if (key == sf::Keyboard::Down)
-	{
-		mPlayer._movingDown = isPressed && mPlayer._onLadder ? true : false;
-	}
-	else if (key == sf::Keyboard::Left)
-	{
-		mPlayer._movingLeft = isPressed;
-	}
-	else if (key == sf::Keyboard::Right)
-	{
-		mPlayer._movingRight = isPressed;
-	}
-
-	// moving free
-	/*if (l_details->m_keyCode == sf::Keyboard::Up)
-	{
-		mPlayer._movingUp;
-	}
-	else if (l_details->m_keyCode == sf::Keyboard::Down)
-	{
-		mPlayer._movingDown;
-	}
-	else if (l_details->m_keyCode == sf::Keyboard::Left)
-	{
-		mPlayer._movingLeft;
-	}
-	else if (l_details->m_keyCode == sf::Keyboard::Right)
-	{
-		mPlayer._movingRight;
-	}*/
-
-
-	if (key == sf::Keyboard::Space)
-	{
-	}
-}
 
 void Game::MoveSprite(EventDetails* l_details)
 {

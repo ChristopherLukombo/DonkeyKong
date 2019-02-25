@@ -9,6 +9,7 @@ public:
 	Player();
 	~Player();
 
+	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
 public :
 	static const float PlayerSpeed;
 

@@ -29,9 +29,7 @@ private:
 	void updateStatistics(sf::Time elapsedTime);
 	void handleCollisionBlock();
 	void handleCollisionLadder();
-	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
 
-	//useless
 	void MoveSprite(EventDetails* l_details);
 
 
