@@ -81,13 +81,13 @@ void Game::processEvents()
 void Game::update(sf::Time elapsedTime)
 {
 	if (mPlayer._movingUp)
-		mPlayer.MoveUp(elapsedTime);
+		mPlayer.MoveUp(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioUp, mEntityManager.GetRessourceManager().mSizeMarioUp);
 	if (mPlayer._movingDown)
-		mPlayer.MoveDown(elapsedTime);
+		mPlayer.MoveDown(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioUp, mEntityManager.GetRessourceManager().mSizeMarioUp);
 	if (mPlayer._movingLeft)
-		mPlayer.MoveLeft(elapsedTime);
+		mPlayer.MoveLeft(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioLeft, mEntityManager.GetRessourceManager().mSizeMarioLeft);
 	if (mPlayer._movingRight)
-		mPlayer.MoveRight(elapsedTime);
+		mPlayer.MoveRight(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioRight, mEntityManager.GetRessourceManager().mSizeMarioRight);
 
 	sf::Vector2f movement(0.f, 0.f);
 	if (!mPlayer._onBlock && !mPlayer._onLadder) {

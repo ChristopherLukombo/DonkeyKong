@@ -9,16 +9,23 @@ public:
 public:
 	sf::Texture		mTextureBlock;
 	sf::Texture		mTextureLadder;
-	sf::Texture		mTextureMario;
+	sf::Texture		mTextureMarioRight;
+	sf::Texture		mTextureMarioLeft;
+	sf::Texture		mTextureMarioUp;
 	sf::Texture		mTextureDonkeyKong;
 	sf::Texture		mTexturePeach;
 	sf::Texture		mTextureCoin;
 	sf::Texture		mTextureBarrel;
 
-	sf::Sprite		mSpriteMario;
+	
+	sf::Sprite		mSpriteMarioRight;
+	sf::Sprite		mSpriteMarioLeft;
+	sf::Sprite		mSpriteMarioUp;
 
 	sf::Vector2u	mSizeBlock;
 	sf::Vector2u	mSizeLadder;
-	sf::Vector2u	mSizeMario;
+	sf::Vector2u	mSizeMarioRight;
+	sf::Vector2u	mSizeMarioLeft;
+	sf::Vector2u	mSizeMarioUp;
 };
 

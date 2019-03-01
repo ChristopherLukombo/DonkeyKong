@@ -10,10 +10,11 @@ public:
 	~Mario();
 
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
-	void MoveUp(sf::Time elapsedTime);
-	void MoveDown(sf::Time elapsedTime);
-	void MoveLeft(sf::Time elapsedTime);
-	void MoveRight(sf::Time elapsedTime);
+	void MoveUp(sf::Time elapsedTime, sf::Sprite sprite, sf::Vector2u size);
+	void MoveDown(sf::Time elapsedTime, sf::Sprite sprite, sf::Vector2u size);
+	void MoveLeft(sf::Time elapsedTime, sf::Sprite sprite, sf::Vector2u size);
+	void MoveRight(sf::Time elapsedTime, sf::Sprite sprite, sf::Vector2u size);
+	void SetMarioSprite(sf::Sprite sprite, sf::Vector2u size);
 
 public :
 	static const float PlayerSpeed;

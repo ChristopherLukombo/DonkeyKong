@@ -18,11 +18,26 @@ RessourceManager::RessourceManager()
 	mSizeLadder = mTextureLadder.getSize();
 
 	// Loading mario texture
-	if (!mTextureMario.loadFromFile("Media/Textures/Mario_small_transparent.png")) 
+	if (!mTextureMarioRight.loadFromFile("Media/Textures/face_right.png")) 
 	{
-		std::printf("ERROR : Loading ladder texture");
+		std::printf("ERROR : Loading mario right texture");
 	}
-	mSizeMario = mTextureMario.getSize();
+	mSizeMarioRight = mTextureMarioRight.getSize();
+	mSpriteMarioRight.setTexture(mTextureMarioRight);
+
+	if (!mTextureMarioLeft.loadFromFile("Media/Textures/face_left.png"))
+	{
+		std::printf("ERROR : Loading mario left texture");
+	}
+	mSizeMarioLeft = mTextureMarioLeft.getSize();
+	mSpriteMarioLeft.setTexture(mTextureMarioLeft);
+
+	if (!mTextureMarioUp.loadFromFile("Media/Textures/climbing.png"))
+	{
+		std::printf("ERROR : Loading mario up texture");
+	}
+	mSizeMarioUp = mTextureMarioUp.getSize();
+	mSpriteMarioUp.setTexture(mTextureMarioUp);
 
 	// Loading donkey kong texture
 	/* (!mTextureDonkeyKong.loadFromFile("Media/Textures/???.png")) {

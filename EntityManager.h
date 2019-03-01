@@ -22,6 +22,7 @@ public:
 public:
 	static std::vector<std::shared_ptr<Entity>> m_Entities;
 	Mario GetMario();
+	RessourceManager GetRessourceManager();
 
 private:
 	RessourceManager	mRessourceManager;

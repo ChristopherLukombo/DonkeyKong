@@ -35,9 +35,9 @@ EntityManager::EntityManager() :
 
 
 	// Draw Mario
-	mario.m_sprite.setTexture(mRessourceManager.mTextureMario);
-	mario.m_size = mRessourceManager.mSizeMario;
-	mario.m_sprite.setPosition(100.f + 70.f, BLOCK_SPACE * 5 - mRessourceManager.mSizeMario.y);
+	mario.m_sprite.setTexture(mRessourceManager.mTextureMarioRight);
+	mario.m_size = mRessourceManager.mSizeMarioRight;
+	mario.m_sprite.setPosition(100.f + 70.f, BLOCK_SPACE * 5 - mRessourceManager.mSizeMarioRight.y -12 );
 	mario.m_position = mario.m_sprite.getPosition();
 
 	//m_Entities.push_back(mario);
@@ -52,5 +52,10 @@ EntityManager::~EntityManager()
 Mario EntityManager::GetMario()
 {
 	return mario;
+}
+
+RessourceManager EntityManager::GetRessourceManager()
+{
+	return mRessourceManager;
 }
 

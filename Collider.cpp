@@ -41,7 +41,8 @@ bool Collider::checkCollisionWithMario(Mario mario, std::shared_ptr<Entity> obje
 
 		// allow to go above the uppper platform + climb closer to the ladder
 		objectBounds.top -= 33;
-		objectBounds.height += 33;
+		
+		objectBounds.height += 5;
 		objectBounds.left += 15;
 		objectBounds.width -= 25;
 
