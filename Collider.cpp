@@ -3,11 +3,6 @@
 #include "EntityManager.h"
 
 
-/*Collider::Collider(sf::Sprite & body, sf::Vector2u size) :
-	body(body), size(size)
-{
-}*/
-
 Collider::Collider()
 {
 
@@ -56,6 +51,22 @@ bool Collider::checkCollisionWithMario(Mario mario, std::shared_ptr<Entity> obje
 			std::cout << "DONT COLLIDE LADDER" << std::endl;
 			return false;
 		}
+	}
+
+	if (object->mType == EntityType::coin) {
+
+		if (playerBounds.intersects(objectBounds) == true)
+		{
+			//std::cout << "COLLIDE BLOCK" << std::endl;
+			object->mEnabled = false;
+			return true;
+		}
+		else
+		{
+			//std::cout << "DONT COLLIDE BLOCK" << std::endl;
+			return false;
+		}
+
 	}
 
 	return false;

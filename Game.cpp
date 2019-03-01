@@ -80,6 +80,8 @@ void Game::processEvents()
 
 void Game::update(sf::Time elapsedTime)
 {
+	mPlayer.mCollideCoin = false;
+
 	if (mPlayer.mMovingUp)
 		mPlayer.MoveUp(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioUp, mEntityManager.GetRessourceManager().mSizeMarioUp);
 	if (mPlayer.mMovingDown)
@@ -88,7 +90,7 @@ void Game::update(sf::Time elapsedTime)
 		mPlayer.MoveLeft(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioLeft, mEntityManager.GetRessourceManager().mSizeMarioLeft);
 	if (mPlayer.mMovingRight)
 		mPlayer.MoveRight(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioRight, mEntityManager.GetRessourceManager().mSizeMarioRight);
-	if (mPlayer.mJumping)
+	if (mPlayer.mJumping && !mPlayer.mIsJumping)
 		mPlayer.Jump(elapsedTime);
 
 	sf::Vector2f movement(0.f, 0.f);
@@ -128,7 +130,8 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		mStatisticsText.setString(
 			"Frames / Second = " + toString(mStatisticsNumFrames) + "\n" +
 			"Time / Update = " + toString(mStatisticsUpdateTime.asMicroseconds() / mStatisticsNumFrames) + "us\n" +
-			"Gravity on ? = " + toString(!mPlayer.mOnBlock));
+			"Gravity on ? = " + toString(!mPlayer.mOnBlock) + "\n" +
+			"Collected Coins = " + toString(mCoinsCollected));
 
 		mStatisticsUpdateTime -= sf::seconds(1.0f);
 		mStatisticsNumFrames = 0;
@@ -142,6 +145,7 @@ void Game::updateStatistics(sf::Time elapsedTime)
 	{
 		handleCollisionLadder();
 		handleCollisionBlock();
+		handleCollisionCoin();
 	}
 }
 
@@ -162,6 +166,7 @@ void Game::handleCollisionBlock()
 			mPlayer.mOnBlock = mCollider.checkCollisionWithMario(mPlayer, block);
 			if (mPlayer.mOnBlock)
 			{
+				mPlayer.mIsJumping = false;
 				break;
 			}
 		}
@@ -189,6 +194,31 @@ void Game::handleCollisionLadder()
 				break;
 			}
 		}
+
+	return;
+}
+
+void Game::handleCollisionCoin()
+{
+	for (std::shared_ptr<Entity> coin : EntityManager::m_Entities)
+	{
+		if (coin->mType != EntityType::coin)
+		{
+			continue;
+		}
+
+		if (coin->mEnabled == false)
+		{
+			continue;
+		}
+
+		mPlayer.mCollideCoin = mCollider.checkCollisionWithMario(mPlayer, coin);
+		if (mPlayer.mCollideCoin)
+		{
+			mCoinsCollected = mCoinsCollected + 0.25f;
+			break;
+		}
+	}
 
 	return;
 }

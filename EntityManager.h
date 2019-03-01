@@ -11,6 +11,8 @@
 #define BLOCK_COUNT_X 8
 #define BLOCK_COUNT_Y 5
 #define BLOCK_SPACE 110.f
+#define COIN_COUNT_X 4
+#define COIN_COUNT_Y 4
 
 
 class EntityManager

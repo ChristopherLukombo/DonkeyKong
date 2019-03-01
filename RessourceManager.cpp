@@ -53,6 +53,8 @@ RessourceManager::RessourceManager()
 	if (!mTextureCoin.loadFromFile("Media/Textures/Piece.png")) {
 		std::printf("ERROR : Loading coin texture");
 	}
+	mSizeCoin = mTextureCoin.getSize();
+	mSpriteCoin.setTexture(mTextureCoin);
 
 	// Loading barrels texture
 	/*if (!mTextureBarrel.loadFromFile("Media/Textures/???.png")) {

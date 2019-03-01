@@ -28,5 +28,6 @@ public :
 	bool mOnLadder;
 	bool mOnBlock;
 	bool mIsJumping;
+	bool mCollideCoin;
 };
 

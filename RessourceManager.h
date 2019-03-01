@@ -21,11 +21,13 @@ public:
 	sf::Sprite		mSpriteMarioRight;
 	sf::Sprite		mSpriteMarioLeft;
 	sf::Sprite		mSpriteMarioUp;
+	sf::Sprite		mSpriteCoin;
 
 	sf::Vector2u	mSizeBlock;
 	sf::Vector2u	mSizeLadder;
 	sf::Vector2u	mSizeMarioRight;
 	sf::Vector2u	mSizeMarioLeft;
 	sf::Vector2u	mSizeMarioUp;
+	sf::Vector2u    mSizeCoin;
 };
 

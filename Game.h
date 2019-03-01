@@ -26,6 +26,8 @@ private:
 	void handleCollisionBlock();
 	void handleCollisionLadder();
 
+	void handleCollisionCoin();
+
 	void MoveSprite(EventDetails* l_details);
 
 
@@ -38,6 +40,7 @@ private:
 	sf::Text			mStatisticsText;
 	sf::Time			mStatisticsUpdateTime;
 	Collider			mCollider;
+	float					mCoinsCollected = 0.f;
 
 	std::size_t			mStatisticsNumFrames;
 
