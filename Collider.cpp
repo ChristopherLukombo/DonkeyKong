@@ -1,65 +1,62 @@
 #include "pch.h"
 #include "Collider.h"
+#include "EntityManager.h"
 
 
-Collider::Collider(sf::Sprite & body, sf::Vector2u size) :
+/*Collider::Collider(sf::Sprite & body, sf::Vector2u size) :
 	body(body), size(size)
 {
+}*/
+
+Collider::Collider()
+{
+
 }
 
 Collider::~Collider()
 {
 }
 
-bool Collider::checkCollision(Collider & other, float push)
+bool Collider::checkCollisionWithMario(Mario mario, std::shared_ptr<Entity> object)
 {
-	sf::Vector2f otherPosition = other.GetPosition();
-	sf::Vector2f otherHalfSize = other.GetHalfSize();
-	sf::Vector2f bodyPosition = GetPosition();
-	sf::Vector2f bodyHalfSize = GetHalfSize();
+	sf::FloatRect playerBounds = mario.m_sprite.getGlobalBounds();
+	sf::FloatRect objectBounds = object->m_sprite.getGlobalBounds();
 
-	float deltaX = otherPosition.x - bodyPosition.x; // DeltaX is the disrance between the x of the two object
-	float deltaY = otherPosition.y - bodyPosition.y; // DeltaY is the distance between the y of the two object
+	if (object->m_type == EntityType::block) {
 
-	// abs(delta) - 
-	float intersectX = abs(deltaX) - (otherHalfSize.x + bodyHalfSize.x);
-	float intersectY = abs(deltaY) - (otherHalfSize.y + bodyHalfSize.y);
-
-	if (intersectX < 0.0f && intersectY < 0.0f)
-	{
-		push = std::min(std::max(push, 0.0f), 1.0f);
-
-		if (intersectX > intersectY)
+		if (playerBounds.intersects(objectBounds) == true)
 		{
-			// x axis
-			if (deltaX > 0.0f)
-			{
-				Move(intersectX * (1.0f - push), 0.0f);
-				other.Move(-intersectX * push, 0.0f);
-			}
-			else
-			{
-				Move(-intersectX * (1.0f - push), 0.0f);
-				other.Move(intersectX * push, 0.0f);
-			}
+			//std::cout << "COLLIDE BLOCK" << std::endl;
+			return true;
 		}
 		else
 		{
-			// y axis
-			if (deltaY > 0.0f)
-			{
-				Move(0.0f, intersectY * (1.0f - push));
-				other.Move(0.0f, -intersectY * push);
-			}
-			else
-			{
-				Move(0.0f , -intersectY * (1.0f - push));
-				other.Move(0.0f, intersectY * push);
-			}
+			//std::cout << "DONT COLLIDE BLOCK" << std::endl;
+			return false;
 		}
 
-		return true;
+	}
+
+	if (object->m_type == EntityType::ladder) {
+
+		// allow to go above the uppper platform + climb closer to the ladder
+		objectBounds.top -= 33;
+		objectBounds.height += 33;
+		objectBounds.left += 15;
+		objectBounds.width -= 25;
+
+		if (playerBounds.intersects(objectBounds) == true)
+		{
+			std::cout << "COLLIDE LADDER" << std::endl;
+			return true;
+		}
+		else
+		{
+			std::cout << "DONT COLLIDE LADDER" << std::endl;
+			return false;
+		}
 	}
 
 	return false;
 }
+

@@ -3,13 +3,18 @@
 #include "Entity.h"
 
 
-class Player : public Entity
+class Mario : public Entity
 {
 public:
-	Player();
-	~Player();
+	Mario();
+	~Mario();
 
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+	void MoveUp(sf::Time elapsedTime);
+	void MoveDown(sf::Time elapsedTime);
+	void MoveLeft(sf::Time elapsedTime);
+	void MoveRight(sf::Time elapsedTime);
+
 public :
 	static const float PlayerSpeed;
 

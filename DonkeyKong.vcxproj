@@ -167,7 +167,8 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Ladder.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Mario.h" />
+    <ClInclude Include="RessourceManager.h" />
     <ClInclude Include="StringHelpers.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -186,7 +187,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Mario.cpp" />
+    <ClCompile Include="RessourceManager.cpp" />
     <ClCompile Include="StringHelpers.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>

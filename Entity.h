@@ -1,5 +1,4 @@
 #pragma once
-#include "Collider.h"
 
 enum EntityType
 {
@@ -7,7 +6,7 @@ enum EntityType
 	donkey_kong,
 	peach,
 	block,
-	coins,
+	coin,
 	ladder,
 	barrel
 
@@ -20,7 +19,6 @@ public:
 	~Entity() { };
 
 	sf::Vector2f GetPosition() { return m_position;  }
-	Collider GetCollider() { return Collider(m_sprite, m_size);  } 
 
 public:
 	sf::Sprite m_sprite;
