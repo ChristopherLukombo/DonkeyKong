@@ -19,10 +19,10 @@ Collider::~Collider()
 
 bool Collider::checkCollisionWithMario(Mario mario, std::shared_ptr<Entity> object)
 {
-	sf::FloatRect playerBounds = mario.m_sprite.getGlobalBounds();
-	sf::FloatRect objectBounds = object->m_sprite.getGlobalBounds();
+	sf::FloatRect playerBounds = mario.mSprite.getGlobalBounds();
+	sf::FloatRect objectBounds = object->mSprite.getGlobalBounds();
 
-	if (object->m_type == EntityType::block) {
+	if (object->mType == EntityType::block) {
 
 		if (playerBounds.intersects(objectBounds) == true)
 		{
@@ -37,7 +37,7 @@ bool Collider::checkCollisionWithMario(Mario mario, std::shared_ptr<Entity> obje
 
 	}
 
-	if (object->m_type == EntityType::ladder) {
+	if (object->mType == EntityType::ladder) {
 
 		// allow to go above the uppper platform + climb closer to the ladder
 		objectBounds.top -= 33;

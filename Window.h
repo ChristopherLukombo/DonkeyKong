@@ -16,10 +16,10 @@ public:
 	bool isDone();
 	bool isFullscreen();
 	sf::Vector2u GetWindowSize();
-	sf::RenderWindow* GetRenderWindow() { return &m_window; }
+	sf::RenderWindow* GetRenderWindow() { return &mWindow; }
 
 	bool Isfocused();
-	void SetFocus(const bool &focus) { m_isFocused = focus; };
+	void SetFocus(const bool &focus) { mIsFocused = focus; };
 	EventManager* GetEventManager();
 	void ToggleFullscreen(EventDetails* l_details);
 	void Close(EventDetails* l_details = nullptr);
@@ -32,12 +32,12 @@ private:
 	void Destroy();
 	void Create();
 
-	sf::RenderWindow m_window;
-	sf::Vector2u m_windowSize;
-	std::string m_windowTitle;
-	EventManager m_eventManager;
-	bool m_isFocused;
-	bool m_isDone;
-	bool m_isFullscreen;
+	sf::RenderWindow mWindow;
+	sf::Vector2u mWindowSize;
+	std::string mWindowTitle;
+	EventManager mEventManager;
+	bool mIsFocused;
+	bool mIsDone;
+	bool mIsFullscreen;
 };
 

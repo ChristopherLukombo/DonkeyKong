@@ -20,95 +20,95 @@ Window::~Window()
 
 void Window::BeginDraw()
 {
-	m_window.clear(sf::Color::Black);
+	mWindow.clear(sf::Color::Black);
 }
 
 void Window::EndDraw()
 {
-	m_window.display();
+	mWindow.display();
 }
 
 void Window::Update()
 {
 	sf::Event event;
-	while (m_window.pollEvent(event))
+	while (mWindow.pollEvent(event))
 	{
 		if (event.type == sf::Event::LostFocus) {
-			m_isFocused = false;
-			m_eventManager.SetFocus(false);
+			mIsFocused = false;
+			mEventManager.SetFocus(false);
 		}
 		else if (event.type == sf::Event::GainedFocus) {
-			m_isFocused = true;
-			m_eventManager.SetFocus(true);
+			mIsFocused = true;
+			mEventManager.SetFocus(true);
 		} 
-		m_eventManager.HandleEvent(event);
+		mEventManager.HandleEvent(event);
 	}
-	m_eventManager.Update();
+	mEventManager.Update();
 }
 
 bool Window::isDone()
 {
-	return m_isDone;
+	return mIsDone;
 }
 
 bool Window::isFullscreen()
 {
-	return m_isFullscreen;
+	return mIsFullscreen;
 }
 
 sf::Vector2u Window::GetWindowSize()
 {
-	return m_windowSize;
+	return mWindowSize;
 }
 
 bool Window::Isfocused()
 {
-	return m_isFocused;
+	return mIsFocused;
 }
 
 EventManager * Window::GetEventManager()
 {
-	return &m_eventManager;
+	return &mEventManager;
 }
 
 void Window::ToggleFullscreen(EventDetails* l_details)
 {
-	m_isFullscreen = !m_isFullscreen;
+	mIsFullscreen = !mIsFullscreen;
 	Destroy();
 	Create();
 }
 
 void Window::Close(EventDetails * l_details)
 {
-	m_isDone = true;
+	mIsDone = true;
 }
 
 void Window::Draw(sf::Drawable & l_drawable)
 {
-	m_window.draw(l_drawable);
+	mWindow.draw(l_drawable);
 }
 
 void Window::Setup(const std::string & l_title, const sf::Vector2u & l_size)
 {
-	m_windowTitle = l_title;
-	m_windowSize = l_size;
-	m_isFullscreen = false;
-	m_isDone = false;
-	m_isFocused = true;
-	m_eventManager.AddCallback("Fullscreen_toggle", &Window::ToggleFullscreen, this);
-	m_eventManager.AddCallback("Window_close", &Window::Close, this);
+	mWindowTitle = l_title;
+	mWindowSize = l_size;
+	mIsFullscreen = false;
+	mIsDone = false;
+	mIsFocused = true;
+	mEventManager.AddCallback("Fullscreen_toggle", &Window::ToggleFullscreen, this);
+	mEventManager.AddCallback("Window_close", &Window::Close, this);
 	Create();
 }
 
 void Window::Destroy()
 {
-	m_window.close();
+	mWindow.close();
 }
 
 void Window::Create()
 {
-	sf::Uint32 style = (m_isFullscreen ? sf::Style::Fullscreen : sf::Style::Close) ;
-	m_window.create({ m_windowSize.x, m_windowSize.y, 32 }, m_windowTitle, style);
-	m_window.setFramerateLimit(160);
+	sf::Uint32 style = (mIsFullscreen ? sf::Style::Fullscreen : sf::Style::Close) ;
+	mWindow.create({ mWindowSize.x, mWindowSize.y, 32 }, mWindowTitle, style);
+	mWindow.setFramerateLimit(160);
 }
 

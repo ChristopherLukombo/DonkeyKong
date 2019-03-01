@@ -80,21 +80,23 @@ void Game::processEvents()
 
 void Game::update(sf::Time elapsedTime)
 {
-	if (mPlayer._movingUp)
+	if (mPlayer.mMovingUp)
 		mPlayer.MoveUp(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioUp, mEntityManager.GetRessourceManager().mSizeMarioUp);
-	if (mPlayer._movingDown)
+	if (mPlayer.mMovingDown)
 		mPlayer.MoveDown(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioUp, mEntityManager.GetRessourceManager().mSizeMarioUp);
-	if (mPlayer._movingLeft)
+	if (mPlayer.mMovingLeft)
 		mPlayer.MoveLeft(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioLeft, mEntityManager.GetRessourceManager().mSizeMarioLeft);
-	if (mPlayer._movingRight)
+	if (mPlayer.mMovingRight)
 		mPlayer.MoveRight(elapsedTime, mEntityManager.GetRessourceManager().mSpriteMarioRight, mEntityManager.GetRessourceManager().mSizeMarioRight);
+	if (mPlayer.mJumping)
+		mPlayer.Jump(elapsedTime);
 
 	sf::Vector2f movement(0.f, 0.f);
-	if (!mPlayer._onBlock && !mPlayer._onLadder) {
+	if (!mPlayer.mOnBlock && !mPlayer.mOnLadder) {
 		movement.y = 100.0f;
 	}
 
-	mPlayer.m_sprite.move(movement * elapsedTime.asSeconds());
+	mPlayer.mSprite.move(movement * elapsedTime.asSeconds());
 
 }
 
@@ -104,14 +106,14 @@ void Game::render()
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
-		if (entity->m_enabled == false)
+		if (entity->mEnabled == false)
 		{
 			continue;
 		}
 
-		mWindow.Draw(entity->m_sprite);
+		mWindow.Draw(entity->mSprite);
 	}
-	mWindow.Draw(mPlayer.m_sprite);
+	mWindow.Draw(mPlayer.mSprite);
 	mWindow.Draw(mStatisticsText);
 	mWindow.EndDraw();
 }
@@ -126,7 +128,7 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		mStatisticsText.setString(
 			"Frames / Second = " + toString(mStatisticsNumFrames) + "\n" +
 			"Time / Update = " + toString(mStatisticsUpdateTime.asMicroseconds() / mStatisticsNumFrames) + "us\n" +
-			"Gravity on ? = " + toString(!mPlayer._onBlock));
+			"Gravity on ? = " + toString(!mPlayer.mOnBlock));
 
 		mStatisticsUpdateTime -= sf::seconds(1.0f);
 		mStatisticsNumFrames = 0;
@@ -147,18 +149,18 @@ void Game::handleCollisionBlock()
 {
 		for (std::shared_ptr<Entity> block : EntityManager::m_Entities)
 		{
-			if (block->m_type != EntityType::block)
+			if (block->mType != EntityType::block)
 			{
 				continue;
 			}
 
-			if (block->m_enabled == false)
+			if (block->mEnabled == false)
 			{
 				continue;
 			}
 
-			mPlayer._onBlock = mCollider.checkCollisionWithMario(mPlayer, block);
-			if (mPlayer._onBlock)
+			mPlayer.mOnBlock = mCollider.checkCollisionWithMario(mPlayer, block);
+			if (mPlayer.mOnBlock)
 			{
 				break;
 			}
@@ -171,18 +173,18 @@ void Game::handleCollisionLadder()
 {
 		for (std::shared_ptr<Entity> ladder : EntityManager::m_Entities)
 		{
-			if (ladder->m_type != EntityType::ladder)
+			if (ladder->mType != EntityType::ladder)
 			{
 				continue;
 			}
 
-			if (ladder->m_enabled == false)
+			if (ladder->mEnabled == false)
 			{
 				continue;
 			}
 
-			mPlayer._onLadder = mCollider.checkCollisionWithMario(mPlayer, ladder);
-			if (mPlayer._onLadder)
+			mPlayer.mOnLadder = mCollider.checkCollisionWithMario(mPlayer, ladder);
+			if (mPlayer.mOnLadder)
 			{
 				break;
 			}
@@ -194,7 +196,7 @@ void Game::handleCollisionLadder()
 void Game::MoveSprite(EventDetails* l_details)
 {
 	sf::Vector2i mousepos = mWindow.GetEventManager()->GetMousePosition(mWindow.GetRenderWindow());
-	mPlayer.m_sprite.setPosition(mousepos.x, mousepos.y);
+	mPlayer.mSprite.setPosition(mousepos.x, mousepos.y);
 
 	std::cout <<"Moving sprite to : "
 		<< mousepos.x << ":" 

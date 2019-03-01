@@ -14,17 +14,19 @@ public:
 	void MoveDown(sf::Time elapsedTime, sf::Sprite sprite, sf::Vector2u size);
 	void MoveLeft(sf::Time elapsedTime, sf::Sprite sprite, sf::Vector2u size);
 	void MoveRight(sf::Time elapsedTime, sf::Sprite sprite, sf::Vector2u size);
+	void Jump(sf::Time elapsedTime);
 	void SetMarioSprite(sf::Sprite sprite, sf::Vector2u size);
 
 public :
 	static const float PlayerSpeed;
 
-	bool _movingUp;
-	bool _movingDown;
-	bool _movingRight;
-	bool _movingLeft; 
-	bool _jumping;
-	bool _onLadder;
-	bool _onBlock;
+	bool mMovingUp;
+	bool mMovingDown;
+	bool mMovingRight;
+	bool mMovingLeft; 
+	bool mJumping;
+	bool mOnLadder;
+	bool mOnBlock;
+	bool mIsJumping;
 };
 

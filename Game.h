@@ -45,7 +45,7 @@ private:
 	sf::Time			mElapsed;
 
 	sf::Font			mFont;
-	sf::Sprite			_Echelle[ECHELLE_COUNT];
-	sf::Sprite			_Block[BLOCK_COUNT_X][BLOCK_COUNT_Y];
+	sf::Sprite			mEchelle[ECHELLE_COUNT];
+	sf::Sprite			mBlock[BLOCK_COUNT_X][BLOCK_COUNT_Y];
 };
 

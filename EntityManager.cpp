@@ -13,10 +13,10 @@ EntityManager::EntityManager() :
 		for (int j = 0; j < BLOCK_COUNT_Y; j++)
 		{
 			std::shared_ptr<Block> block = std::make_shared<Block>();
-			block->m_sprite.setTexture(mRessourceManager.mTextureBlock);
-			block->m_sprite.setPosition(100.f + 70.f * (i + 1), 0.f + BLOCK_SPACE * (j + 1));
-			block->m_size = mRessourceManager.mSizeBlock;
-			block->m_position = block->m_sprite.getPosition();
+			block->mSprite.setTexture(mRessourceManager.mTextureBlock);
+			block->mSprite.setPosition(100.f + 70.f * (i + 1), 0.f + BLOCK_SPACE * (j + 1));
+			block->mSize = mRessourceManager.mSizeBlock;
+			block->mPosition = block->mSprite.getPosition();
 			m_Entities.push_back(block);
 		}
 	}
@@ -26,19 +26,19 @@ EntityManager::EntityManager() :
 	for (int i = 0; i < ECHELLE_COUNT; i++)
 	{
 		std::shared_ptr<Ladder> ladder = std::make_shared<Ladder>();
-		ladder->m_sprite.setTexture(mRessourceManager.mTextureLadder);
-		ladder->m_sprite.setPosition(100.f + 70.f * (i + 1), 0.f + BLOCK_SPACE * (i + 1) + mRessourceManager.mSizeBlock.y);
-		ladder->m_size = mRessourceManager.mSizeLadder;
-		ladder->m_position = ladder->m_sprite.getPosition();
+		ladder->mSprite.setTexture(mRessourceManager.mTextureLadder);
+		ladder->mSprite.setPosition(100.f + 70.f * (i + 1), 0.f + BLOCK_SPACE * (i + 1) + mRessourceManager.mSizeBlock.y);
+		ladder->mSize = mRessourceManager.mSizeLadder;
+		ladder->mPosition = ladder->mSprite.getPosition();
 		m_Entities.push_back(ladder);
 	}
 
 
 	// Draw Mario
-	mario.m_sprite.setTexture(mRessourceManager.mTextureMarioRight);
-	mario.m_size = mRessourceManager.mSizeMarioRight;
-	mario.m_sprite.setPosition(100.f + 70.f, BLOCK_SPACE * 5 - mRessourceManager.mSizeMarioRight.y -12 );
-	mario.m_position = mario.m_sprite.getPosition();
+	mario.mSprite.setTexture(mRessourceManager.mTextureMarioRight);
+	mario.mSize = mRessourceManager.mSizeMarioRight;
+	mario.mSprite.setPosition(100.f + 70.f, BLOCK_SPACE * 5 - mRessourceManager.mSizeMarioRight.y -12 );
+	mario.mPosition = mario.mSprite.getPosition();
 
 	//m_Entities.push_back(mario);
 

@@ -4,7 +4,7 @@
 
 Ladder::Ladder()
 {
-	m_type = EntityType::ladder;
+	mType = EntityType::ladder;
 }
 
 

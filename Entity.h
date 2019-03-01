@@ -18,17 +18,17 @@ public:
 	Entity() { };
 	~Entity() { };
 
-	sf::Vector2f GetPosition() { return m_position;  }
+	sf::Vector2f GetPosition() { return mPosition;  }
 
 public:
-	sf::Sprite m_sprite;
-	sf::Vector2u m_size;
-	sf::Vector2f m_position;
-	EntityType m_type;
-	bool m_enabled = true;
+	sf::Sprite mSprite;
+	sf::Vector2u mSize;
+	sf::Vector2f mPosition;
+	EntityType mType;
+	bool mEnabled = true;
 
 	// Enemy only
-	bool m_bLeftToRight = true;
-	int m_times = 0;
+	bool mBLeftToRight = true;
+	int mTimes = 0;
 };
 
